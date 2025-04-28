@@ -1,0 +1,192 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contador Vibe Futuristico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: rgb(0, 0, 0);
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: rgb(0, 238, 255);
+    }
+
+    /* Fundo de estrelas */
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .star {
+       position: absolute;
+       width: 3px;
+       height: 3px;
+       background: rgb(0, 247, 255);
+       border-radius: 100%;
+       opacity: 0.5;
+       animation: twinkle 3s infinite ease-in-out, moveStar 50s linear infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    @keyframes moveStar {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100vh); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 40px;
+      border: 4px solid #0ff;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #0ff;
+      background-color: rgba(0, 0, 0, 0.6);
+      text-align: center;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .counter {
+      font-size: 80px;
+      letter-spacing: 8px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    }
+
+    .datetime {
+      font-size: 18px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    button {
+      background: transparent;
+      border: 2px solid #0ff;
+      color: #0ff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      text-shadow: 0 0 10px #0ff;
+      box-shadow: 0 0 10px #0ff, inset 0 0 5px #0ff;
+    }
+
+    button:hover {
+      background-color: #0ff;
+      color: #000;
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 0 20px #0ff, 0 0 30px #0ff;
+    }
+
+    button:active {
+      transform: scale(1) translateY(2px);
+      box-shadow: 0 0 10px #0ff, 0 0 15px #0ff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Estrelas geradas dinamicamente -->
+  <div class="stars" id="stars-container"></div>
+
+  <div class="container">
+    <h1>Contador Do Gabriel 🚀</h1>
+    <div class="datetime" id="datetime">Carregando data e hora...</div>
+    <div class="counter" id="counter">0</div>
+
+    <div class="buttons">
+      <div class="buttons">
+        <button onmousedown="startAutoChange(-1000)" onmouseup="stopAutoChange()" onmouseleave="stopAutoChange()">-1000</button>
+        <button onmousedown="startAutoChange(-100)" onmouseup="stopAutoChange()" onmouseleave="stopAutoChange()">-100</button>
+        <button onmousedown="startAutoChange(-10)" onmouseup="stopAutoChange()" onmouseleave="stopAutoChange()">-10</button>
+        <button onmousedown="startAutoChange(-1)" onmouseup="stopAutoChange()" onmouseleave="stopAutoChange()">-1</button>
+        <button onclick="resetCount()">Reset</button>
+        <button onmousedown="startAutoChange(1)" onmouseup="stopAutoChange()" onmouseleave="stopAutoChange()">+1</button>
+        <button onmousedown="startAutoChange(10)" onmouseup="stopAutoChange()" onmouseleave="stopAutoChange()">+10</button>
+        <button onmousedown="startAutoChange(100)" onmouseup="stopAutoChange()" onmouseleave="stopAutoChange()">+100</button>
+        <button onmousedown="startAutoChange(1000)" onmouseup="stopAutoChange()" onmouseleave="stopAutoChange()">+1000</button>
+      </div>
+     
+    </div>
+  </div>
+
+  <script>
+    // Inicializa contagem
+    let count = parseInt(localStorage.getItem('contador')) || 0;
+    const counterElement = document.getElementById("counter");
+    const datetimeElement = document.getElementById("datetime");
+
+    function changeCount(value) {
+      count += value;
+      counterElement.textContent = count;
+      localStorage.setItem('contador', count);
+    }
+
+    function resetCount() {
+      count = 0;
+      counterElement.textContent = count;
+      localStorage.setItem('contador', count);
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+      const formatted = now.toLocaleString();
+      datetimeElement.textContent = `Data e hora: ${formatted}`;
+    }
+
+    // Atualiza data/hora
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+    counterElement.textContent = count;
+
+    // Gerador de estrelas
+    const starsContainer = document.getElementById("stars-container");
+    const starCount = 1000;
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement("div");
+      star.classList.add("star");
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 2}s`;
+      starsContainer.appendChild(star);
+    }
+    let autoChangeInterval;
+
+function startAutoChange(value) {
+  changeCount(value); // Faz a primeira mudança imediata
+  autoChangeInterval = setInterval(() => changeCount(value), 1000); // Continua repetindo
+}
+
+function stopAutoChange() {
+  clearInterval(autoChangeInterval);
+}
+
+  </script>
+
+</body>
+</html>
